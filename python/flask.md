@@ -1,5 +1,9 @@
 # FLASK
 
+> flask牛逼就是牛在它本身是个轻量级web
+>
+> 如果你想用什么功能可以下载flask的关联库
+
 ***
 
 ## 基本用法
@@ -332,3 +336,90 @@ session依赖于cookie，在服务器保持session
 
 
 
+##  jianjia2模板
+
+
+
+## WTF表单模板
+
+
+
+## csrf安全
+
+
+
+## MYSQL数据库
+
+#### 安装需要的库
+
+- `pip install flask-sqlalchemy`
+
+  SQLAlchemy是一个关系型数据库框架，它提供了高层的 ORM 和底层的原生数据库的操作。flask-sqlalchemy 是一个简化了 SQLAlchemy 操作的flask扩展。
+
+- `pip install flask-mysqldb`
+
+  如果连接的是 mysql 数据库，需要安装 mysqldb
+
+#### 使用pycharm链接mysql
+
+![](flask库\10.png)
+
+![](flask库\11.png)
+
+1. 数据库用户名
+
+2. 数据库密码
+
+3. 数据库端口号（以及地址）全在上边设置完了
+
+4. 下载缺失的驱动文件，可以上来就点
+
+   > 还有其他的比如Database的东西也可以设置
+
+**最后点击 Test Connection 测试链接****
+
+![](flask库\12.png)
+
+1. mysql操作面板
+2. 写完mysql语句，点击运行
+
+#### SQLAlchemy库
+
+通过建类的方法建表
+
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+# 设置数据库的链接
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@127.0.0.1：3306：text_t'
+
+# 动态追踪修改设置
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+# 查询显示原生的SQL语句
+app.config['SQLALCHEMY_ECHO'] = True
+
+# 数据库进行关联
+db = SQLAlchemy(app)
+
+
+# 创建一个表的模板（后边需要用的时候直接拿类生成就好）
+class Role(db.Model):
+    # 定义表名
+    __tablename__ = 'role'
+    # 主键
+    id = db.Column(db.Integer,primary_key=True)
+    # 不重复
+    name = db.Column(db.String(64),unique=True)
+    us = db.relationship('User',backref='role')
+
+    def __repr__(self):
+        return 'Role:%s' % self.name
+    
+if __name__ == '__main__':
+    # 增删改查用法（百度吧）
+    pass
+```
