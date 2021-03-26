@@ -15,15 +15,16 @@
 	1. 数据库的英文单词： DataBase 简称 ： DB
 	2. 什么数据库？
 		* 用于存储和管理数据的仓库。
-
+	
 	3. 数据库的特点：
 		1. 持久化存储数据的。其实数据库就是一个文件系统
 		2. 方便存储和管理数据
 		3. 使用了统一的方式操作数据库 -- SQL
 
-	
-	4. 常见的数据库软件
-		* 参见《MySQL基础.pdf》
+
+​	
+​	4. 常见的数据库软件
+​		* 参见《MySQL基础.pdf》
 
 
 # MySQL数据库软件
@@ -94,8 +95,8 @@
 			* 创建数据库，判断不存在，再创建：
 				* create database if not exists 数据库名称;
 			* 创建数据库，并指定字符集
-				* create database 数据库名称 character set 字符集名;
-
+				* create database 数据库名称 character set 字符集名（编码方式）;
+	
 			* 练习： 创建db4数据库，判断是否存在，并制定字符集为gbk
 				* create database if not exists db4 character set gbk;
 		2. R(Retrieve)：查询
@@ -105,7 +106,7 @@
 				* show create database 数据库名称;
 		3. U(Update):修改
 			* 修改数据库的字符集
-				* alter database 数据库名称 character set 字符集名称;
+				* alter database 数据库名称 character set 字符集名称（编码方式）;
 		4. D(Delete):删除
 			* 删除数据库
 				* drop database 数据库名称;
@@ -137,11 +138,11 @@
 					4. datetime:日期，包含年月日时分秒	 yyyy-MM-dd HH:mm:ss
 					5. timestamp:时间错类型	包含年月日时分秒	 yyyy-MM-dd HH:mm:ss	
 						* 如果将来不给这个字段赋值，或赋值为null，则默认使用当前的系统时间，来自动赋值
-
+	
 					6. varchar：字符串
 						* name varchar(20):姓名最大20个字符
 						* zhangsan 8个字符  张三 2个字符
-				
+
 
 			* 创建表
 				create table student(
@@ -179,28 +180,40 @@
 
 ## DML：增删改表中数据
 
-	1. 添加数据：
-		* 语法：
-			* insert into 表名(列名1,列名2,...列名n) values(值1,值2,...值n);
-		* 注意：
-			1. 列名和值要一一对应。
-			2. 如果表名后，不定义列名，则默认给所有列添加值
-				insert into 表名 values(值1,值2,...值n);
-			3. 除了数字类型，其他类型需要使用引号(单双都可以)引起来
-	2. 删除数据：
-		* 语法：
-			* delete from 表名 [where 条件]
-		* 注意：
-			1. 如果不加条件，则删除表中所有记录。
-			2. 如果要删除所有记录
-				1. delete from 表名; -- 不推荐使用。有多少条记录就会执行多少次删除操作
-				2. TRUNCATE TABLE 表名; -- 推荐使用，效率更高 先删除表，然后再创建一张一样的表。
-	3. 修改数据：
-		* 语法：
-			* update 表名 set 列名1 = 值1, 列名2 = 值2,... [where 条件];
+```mysql
+1. 添加数据：
+	* 语法：
+		* insert into 表名(列名1,列名2,...列名n) values(值1,值2,...值n);
+		eg.
+			-- 往学生表的id和name中加入1和"张三丰"
+			insert into stu(id,name) values(1,"张三丰");
+			
+			-- 插入单个值（多个括号）
+			INSERT INTO tab_category(cname) VALUES("周边游"),("出境游"),("国内游"),("港澳游");
+			
+			-- 直接向表中插入所有属性（假设此时表格一共只有四列（四个属性））
+			insert into stu values(1,"张三丰","男","沈阳人")
 
-		* 注意：
-			1. 如果不加任何条件，则会将表中所有记录全部修改。
+	* 注意：
+		1. 列名和值要一一对应。
+		2. 如果表名后，不定义列名，则默认给所有列添加值
+			insert into 表名 values(值1,值2,...值n);
+		3. 除了数字类型，其他类型需要使用引号(单双都可以)引起来
+2. 删除数据：
+	* 语法：
+		* delete from 表名 [where 条件]
+	* 注意：
+		1. 如果不加条件，则删除表中所有记录。
+		2. 如果要删除所有记录
+			1. delete from 表名; -- 不推荐使用。有多少条记录就会执行多少次删除操作
+			2. TRUNCATE TABLE 表名; -- 推荐使用，效率更高 先删除表，然后再创建一张一样的表。
+3. 修改数据：
+	* 语法：
+		* update 表名 set 列名1 = 值1, 列名2 = 值2,... [where 条件];
+
+	* 注意：
+		1. 如果不加任何条件，则会将表中所有记录全部修改。
+```
 
 
 
@@ -236,9 +249,11 @@
 			* ifnull(表达式1,表达式2)：null参与的运算，计算结果都为null
 				* 表达式1：哪个字段需要判断是否为null
 				* 如果该字段为null后的替换值。
+				eg.ifnull(a,b)
+					如果a是null则返回值为b
 		4. 起别名：
-			* as：as也可以省略
-			
+			* as：as也可以省略(给返回值重新起个名)
+
 
 	3. 条件查询
 		1. where子句后跟条件
@@ -249,14 +264,18 @@
 			* LIKE：模糊查询
 				* 占位符：
 					* _:单个任意字符
+						eg. "_" 表示只有一个字
+							"_化" 表示第二字是化
 					* %：多个任意字符
+						eg."%腾" 表示以腾字结尾
+						eg."%使%" 表示字符串中带使字
 			* IS NULL  
 			* and  或 &&
 			* or  或 || 
 			* not  或 !
 			
 				-- 查询年龄大于20岁
-
+	
 				SELECT * FROM student WHERE age > 20;
 				
 				SELECT * FROM student WHERE age >= 20;
@@ -285,22 +304,19 @@
 				
 				-- 查询英语成绩不为null
 				SELECT * FROM student WHERE english  IS NOT NULL;
-	
+
 
 
 				-- 查询姓马的有哪些？ like
 				SELECT * FROM student WHERE NAME LIKE '马%';
-				-- 查询姓名第二个字是化的人
 				
+				-- 查询姓名第二个字是化的人
 				SELECT * FROM student WHERE NAME LIKE "_化%";
 				
 				-- 查询姓名是3个字的人
 				SELECT * FROM student WHERE NAME LIKE '___';
 				
-				
 				-- 查询姓名中包含德的人
 				SELECT * FROM student WHERE NAME LIKE '%德%';
 
-
-
-	
+​	
