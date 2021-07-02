@@ -332,7 +332,7 @@ CREATE TABLE myorder (
 );
 ```
 
-实际上，在这张订单表中，`product_name` 只依赖于 `product_id` ，`customer_name` 只依赖于 `customer_id` 。也就是说，`product_name` 和 `customer_id` 是没用关系的，`customer_name` 和 `product_id` 也是没有关系的。
+实际上，在这张订单表中，`product_name` 只依赖于 `product_id` ，`customer_name` 只依赖于 `customer_id` 。也就是说，`product_name` 和 `customer_id` 是没有关系的，`customer_name` 和 `product_id` 也是没有关系的。
 
 这就不满足第二范式：其他列都必须完全依赖于主键列！
 
@@ -2176,3 +2176,88 @@ INSERT INTO user VALUES (7, '王小花', 1000);
 此时会发生什么呢？由于现在的隔离级别是 **SERIALIZABLE ( 串行化 )** ，串行化的意思就是：假设把所有的事务都放在一个串行的队列中，那么所有的事务都会按照**固定顺序执行**，执行完一个事务后再继续执行下一个事务的**写入操作** ( **这意味着队列中同时只能执行一个事务的写入操作** ) 。
 
 根据这个解释，小王在插入数据时，会出现等待状态，直到小张执行 `COMMIT` 结束它所处的事务，或者出现等待超时。
+
+
+
+### 其他
+
+- 执行顺序：
+
+  - from 
+  - on 
+  - join 
+  - where 
+  - group by 
+  - select
+  - having 
+  - distinct 
+  - union 
+  - order by
+
+- 求平均值需要分组计算（group by + 属性）（条件 -> having）
+
+  可以用在where后面，等where筛选完在分组
+
+- order by XX 按XX进行排序，默认升序ASC，如果降序用DESC关键字，可以使用两个XX按先后顺序进行排列，中间用“，”隔开
+
+  （可以作用于刚查出来的表）
+
+- 每个select和from后边都可以用as给表取个名字
+- 如果分组求的结果（平均值啥的）后边还会用，需要设置一个名称
+- distinct关键字，查询时候，不重复，放要查的属性前边
+  - 可以对单个字段去重
+  - 对多个字段去重时，此时所列的字段需要同时满足才会起到去重效果，否则不会去重
+
+- exists关键字，存在
+
+  - exists判断内容是否为空，适合**外大内小**
+  - in为判定是否在集合内，适合**外小内大**
+
+- like关键字，条件查询，%表示通配符，_ 表示一个字
+
+  - escape “X”，告诉sql，X是普通字符，不是通配符
+  - eg. where name like “%风__” ：名字里带“风”，且前边有好多字，后边只有一个字
+  - eg. where name like "&" escape “&”，表示&不是通配符
+
+- where后边有多个and，他是从左到右执行的，所以排除最多的条件放在第一位
+
+- count，avg，sum这些函数形成的关键字，后边不能加空格
+
+- <>和!=都表示不等于，但是<>是标准数据库写法，某些低版本不支持!=
+
+- from后边要么是临时合成表，要么是已经存在的表。直接用前边合成的表名不行
+
+- case关键字，case 属性 when 条件 then 变成    when 条件 then 变成 else 变成 end
+
+- limit关键字，限制查询结果，返回数量
+
+  - limit n 显示前n个
+  - limit index，n 从index开始往后n个（总索引从0开始）
+
+- rank，dense_rank，row_number三个排序函数
+
+  - 用法：rank() over(partition 条件1 order by 条件2 desc)
+
+    通过条件1分组，每个分组中通过条件2进行排序
+
+  - 1 2 3 4 5 6   row_number
+  - 1 1 3 4 4 6   rank
+  - 1 1 2 3 3 4   dense_rank
+
+- 当两个表有两个相同外键时，要同时相等
+
+- select后边可以直接用加减乘除
+
+- concat(a,b) 将a和b进行字符串拼接
+
+- year(时间戳) 提取时间戳中的年份
+
+- now() 表示当前时间戳
+
+- week(时间戳，n) 查询时间戳在那一年有多少周（n=0表示，从周日计时，是默认值）
+
+- month(时间戳) 查询时间戳在这一年的第几月
+
+- count(*) 查询所有数据的数量，某一条数据可以有null
+
+  count(1) 查询第一列有效数据数量，不包含null
